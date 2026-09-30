@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+admin-web/dist/
+backend/dist/
+
+# Environment
+backend/.env
+*.env
+
+# Uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQL
+*.sql
+
+# Local backups and server configuration
+.backup/
+.user.ini
+.htaccess
+
+# Local environment overrides and credentials
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key

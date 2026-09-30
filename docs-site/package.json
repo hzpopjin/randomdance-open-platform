@@ -1,0 +1,15 @@
+{
+  "name": "chaojifather-docs-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "随机舞蹈中文站开放平台 · 静态文档中心（VitePress）",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  }
+}

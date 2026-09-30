@@ -1,0 +1,245 @@
+/* ============================================================
+   开放平台文档中心 · 自定义主题
+   美学方向：Editorial Blueprint —— 暖纸墨色 + 铁锈琥珀点缀，
+   暗色为深靛墨蓝配暖琥珀，等宽优先呈现 API 路径。
+   ============================================================ */
+
+:root {
+  /* 品牌色：铁锈琥珀 */
+  --vp-c-brand-1: #b0491d;
+  --vp-c-brand-2: #c25a29;
+  --vp-c-brand-3: #d9723c;
+  --vp-c-brand-soft: rgba(176, 73, 29, 0.14);
+
+  /* 暖纸背景 */
+  --vp-c-bg: #fbf7f0;
+  --vp-c-bg-alt: #f4ede1;
+  --vp-c-bg-elv: #fffdf9;
+  --vp-c-bg-soft: #f3ece0;
+
+  /* 墨色文字 */
+  --vp-c-text-1: #241d16;
+  --vp-c-text-2: #574b3d;
+  --vp-c-text-3: #857765;
+
+  --vp-c-border: #e2d7c5;
+  --vp-c-divider: #ece2d2;
+  --vp-c-gutter: #efe6d7;
+
+  /* 字体 */
+  --vp-font-family-base: 'Instrument Sans', 'PingFang SC', 'Microsoft YaHei',
+    system-ui, -apple-system, sans-serif;
+  --vp-font-family-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas,
+    'Liberation Mono', monospace;
+  --vp-font-family-display: 'Bricolage Grotesque', 'Instrument Sans',
+    'PingFang SC', sans-serif;
+
+  /* 首页 hero 主视觉 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #b0491d 20%, #d9723c 60%, #8a5a2b);
+  --vp-home-hero-image-background-image: linear-gradient(120deg, #d9723c 40%, #b0491d);
+  --vp-home-hero-image-filter: blur(48px);
+}
+
+.dark {
+  --vp-c-brand-1: #f0a35e;
+  --vp-c-brand-2: #e08f45;
+  --vp-c-brand-3: #c9762f;
+  --vp-c-brand-soft: rgba(240, 163, 94, 0.16);
+
+  /* 深靛墨蓝 */
+  --vp-c-bg: #14161c;
+  --vp-c-bg-alt: #0f1116;
+  --vp-c-bg-elv: #1b1e26;
+  --vp-c-bg-soft: #1e222b;
+
+  --vp-c-text-1: #f2ece1;
+  --vp-c-text-2: #b6ac9b;
+  --vp-c-text-3: #837a6b;
+
+  --vp-c-border: #2c313c;
+  --vp-c-divider: #232833;
+  --vp-c-gutter: #0b0d11;
+}
+
+/* ---------- 标题：Bricolage Grotesque ---------- */
+h1,
+h2,
+h3,
+h4,
+.VPHero .name .clip,
+.VPDoc .content h1,
+.VPDoc .content h2 {
+  font-family: var(--vp-font-family-display);
+  letter-spacing: -0.01em;
+}
+
+.vp-doc h2 {
+  border-top: none;
+  padding-top: 1.6em;
+  position: relative;
+}
+
+.vp-doc h2::before {
+  content: '';
+  position: absolute;
+  top: 0.4em;
+  left: 0;
+  width: 34px;
+  height: 3px;
+  background: var(--vp-c-brand-3);
+  border-radius: 2px;
+}
+
+/* ---------- 首页 hero：蓝图网格质感 ---------- */
+.VPHero {
+  position: relative;
+}
+
+.VPHero::before {
+  content: '';
+  position: absolute;
+  inset: -60px 0 auto 0;
+  height: 460px;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--vp-c-divider) 1px, transparent 1px),
+    linear-gradient(90deg, var(--vp-c-divider) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 78%);
+  opacity: 0.75;
+}
+
+.VPHero .name {
+  font-family: var(--vp-font-family-display);
+}
+
+.VPHero .text {
+  font-family: var(--vp-font-family-display);
+}
+
+/* ---------- 首页特性卡片 ---------- */
+.VPFeature {
+  border: 1px solid var(--vp-c-border);
+  border-radius: 14px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.VPFeature:hover {
+  transform: translateY(-4px);
+  border-color: var(--vp-c-brand-3);
+  box-shadow: 0 14px 34px -18px rgba(176, 73, 29, 0.5);
+}
+
+.VPFeature .title {
+  font-family: var(--vp-font-family-display);
+}
+
+/* ---------- 行内代码 ---------- */
+.vp-doc :not(pre) > code {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.86em;
+  color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.dark .vp-doc :not(pre) > code {
+  color: var(--vp-c-brand-1);
+}
+
+/* ---------- 表格 ---------- */
+.vp-doc table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.vp-doc th {
+  background: var(--vp-c-bg-soft);
+  font-family: var(--vp-font-family-display);
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc td code {
+  white-space: nowrap;
+}
+
+/* ---------- HTTP 方法徽标（可在 Markdown 中用 <span class="m m-get">GET</span>） ---------- */
+.m {
+  display: inline-block;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 5px;
+  color: #fff;
+  vertical-align: middle;
+  min-width: 52px;
+  text-align: center;
+}
+
+.m-get { background: #2f7fbf; }
+.m-post { background: #2f9e63; }
+.m-put { background: #cf8419; }
+.m-patch { background: #8a5cc4; }
+.m-delete { background: #cc4b3c; }
+
+/* 鉴权级别徽标 */
+.acl {
+  display: inline-block;
+  font-size: 0.72em;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--vp-c-border);
+  color: var(--vp-c-text-2);
+  background: var(--vp-c-bg-soft);
+  vertical-align: middle;
+}
+
+.acl-public { border-color: #2f9e63; color: #2f9e63; }
+.acl-user { border-color: #2f7fbf; color: #2f7fbf; }
+.acl-organizer { border-color: #b06f14; color: #b06f14; }
+.acl-admin { border-color: #cc4b3c; color: #cc4b3c; }
+
+/* ---------- 自定义容器 ---------- */
+.vp-doc .custom-block {
+  border-radius: 10px;
+  border-left-width: 4px;
+}
+
+.vp-doc .custom-block.tip {
+  border-color: #2f9e63;
+}
+
+/* ---------- 侧边栏 ---------- */
+.VPSidebarItem .text {
+  font-family: var(--vp-font-family-base);
+}
+
+.VPSidebarItem.is-active > .item .text {
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
+/* ---------- 导航栏品牌 ---------- */
+.VPNavBar .title {
+  font-family: var(--vp-font-family-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- 顶部进度条 ---------- */
+::selection {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
