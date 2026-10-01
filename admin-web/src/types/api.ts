@@ -22,6 +22,8 @@ export interface LoginParams {
 export interface LoginResult {
   token: string;
   user: AdminUser;
+  guest_id?: number;
+  guest_secret?: string;
 }
 
 export interface AdminUser {

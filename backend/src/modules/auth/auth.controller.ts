@@ -19,8 +19,8 @@ export class AuthController {
   }
 
   @Post('guest')
-  guestLogin(@Body() body: { device_id?: string }) {
-    return this.authService.guestLogin(body?.device_id);
+  guestLogin(@Body() body: { device_id?: string; guest_id?: number; guest_secret?: string }) {
+    return this.authService.guestLogin(body);
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -28,6 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userRepo.findOne({ where: { id: payload.sub } });
     if (!user) throw new UnauthorizedException('用户不存在');
     if (user.status === 0) throw new UnauthorizedException('账号已停用，请联系管理员');
+    if (user.is_guest && user.role !== 0) throw new UnauthorizedException('游客账号权限异常');
     return { id: user.id, username: user.username, role: user.role };
   }
 }

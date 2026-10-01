@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 // 响应拦截器会返回 response.data，而不是 AxiosResponse。显式描述这一契约，
@@ -24,12 +24,20 @@ request.interceptors.request.use((config) => {
   return config;
 });
 
+// Only the bearer sent by this request can invalidate the current session.
+// A response may arrive after logout or after another login has succeeded.
+function isCurrentSessionRequest(config?: AxiosRequestConfig): boolean {
+  const currentToken = localStorage.getItem('admin_token');
+  const authorization = AxiosHeaders.from(config?.headers).get('Authorization');
+  return !!currentToken && authorization === `Bearer ${currentToken}`;
+}
+
 request.interceptors.response.use(
   (response) => {
     const { code, message: msg } = response.data;
     if (code !== 0 && code !== undefined) {
       if (code === 10002) {
-        localStorage.removeItem('admin_token');
+        if (isCurrentSessionRequest(response.config)) localStorage.removeItem('admin_token');
         return Promise.reject(new Error('登录已过期'));
       }
       return Promise.reject(new Error(msg || '请求失败'));
@@ -37,9 +45,11 @@ request.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('admin_token');
-      window.location.href = '/login';
+    if (error.response?.status === 401 && !error.config?.url?.endsWith('/auth/guest')) {
+      if (isCurrentSessionRequest(error.config)) {
+        localStorage.removeItem('admin_token');
+        window.location.href = '/login';
+      }
       return Promise.reject(new Error('登录已过期'));
     }
     const errorMsg = error.response?.data?.message || error.message || '请求失败';

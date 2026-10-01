@@ -35,6 +35,9 @@ export class User {
   @Column({ type: 'tinyint', default: 1 })
   status: number;
 
+  @Column({ type: 'tinyint', default: 0 })
+  is_guest: number;
+
   @Column({ length: 128, nullable: true })
   organizer_name: string | null;
 

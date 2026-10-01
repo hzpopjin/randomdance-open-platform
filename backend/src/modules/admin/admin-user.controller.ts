@@ -114,6 +114,7 @@ export class AdminUserController {
     this.assertNotSelf(userId, currentUserId);
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
+
     // 显式白名单编辑，杜绝越权写入 role/status/password。
     if (body.nickname !== undefined) user.nickname = body.nickname;
     if (body.phone !== undefined) user.phone = body.phone;
@@ -144,6 +145,9 @@ export class AdminUserController {
     }
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new HttpException('用户不存在', HttpStatus.NOT_FOUND);
+    if (user.is_guest && role !== UserRole.USER) {
+      throw new HttpException('游客账号不能直接赋予管理角色', HttpStatus.BAD_REQUEST);
+    }
 
     if (body.organizer_name !== undefined) {
       user.organizer_name = body.organizer_name?.trim() || null;

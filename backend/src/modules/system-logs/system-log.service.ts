@@ -39,6 +39,11 @@ export class SystemLogService {
     level: string; type: string; status_code?: number; business_code?: number;
     message: string; duration_ms?: number; response_payload?: any; error_stack?: string;
   }) {
+    // Draft text and preview examples may contain personal information. Never persist
+    // their request/response/query/error payloads, including validation failures.
+    let path = (req.originalUrl || req.url || '').split('?')[0];
+    try { path = decodeURIComponent(path); } catch { /* retain literal path */ }
+    if (/\/admin\/notification-drafts(?:\/|$)/i.test(path)) return;
     try {
       const log = this.logRepo.create({
         level: data.level,
