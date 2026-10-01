@@ -105,9 +105,9 @@ curl -X POST http://localhost:3002/api/v1/auth/login \
 
 <span class="m m-post">POST</span> `/auth/guest` · <span class="acl acl-public">公开</span>
 
-按 `device_id` 创建或复用一个 `role = 0` 的游客账号并返回 JWT，便于免注册体验。
+创建免注册游客身份。首次响应包含 `guest_id` 与 `guest_secret`；后续请求必须回传两者才能恢复同一游客。`device_id` 仅用于兼容旧客户端，不用于身份验证。旧版游客账号不能靠设备 ID 恢复，详见仓库 `docs/guest-identity-upgrade.md`。
 
-**请求体**：`{ "device_id"?: string }`（可省略，服务端自动生成）
+**请求体**：`{ "device_id"?: string, "guest_id"?: number, "guest_secret"?: string }`（恢复时必须同时提供后两项）
 
 ```bash
 curl -X POST http://localhost:3002/api/v1/auth/guest \
@@ -136,7 +136,7 @@ curl http://localhost:3002/api/v1/auth/profile \
 {
   "sub": 1,             // 用户 ID
   "role": 1,            // 0=普通用户, 1=超级管理员, 2=主办方
-  "identityVersion": 1, // 身份版本号
+  "identityVersion": 2, // 身份版本号；升级后全部旧 JWT 失效，需重新登录
   "iat": 1730000000,
   "exp": 1730604800
 }

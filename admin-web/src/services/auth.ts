@@ -9,8 +9,8 @@ export function register(data: { username: string; password: string; nickname?: 
   return request.post<ApiResponse<LoginResult>>('/auth/register', data);
 }
 
-export function guestLogin(deviceId?: string) {
-  return request.post<ApiResponse<LoginResult>>('/auth/guest', { device_id: deviceId });
+export function guestLogin(deviceId?: string, credential?: { guest_id: number; guest_secret: string }) {
+  return request.post<ApiResponse<LoginResult>>('/auth/guest', { device_id: deviceId, ...credential });
 }
 
 export function logout() {

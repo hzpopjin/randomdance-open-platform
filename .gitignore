@@ -22,6 +22,7 @@ Thumbs.db
 
 # SQL
 *.sql
+!backend/migrations/*.sql
 
 # Local backups and server configuration
 .backup/

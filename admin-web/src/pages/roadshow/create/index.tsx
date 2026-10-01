@@ -127,8 +127,8 @@ export default function RoadshowCreatePage() {
 
   const next = async () => {
     try {
-      const fields = current === 0 ? ['organizer_id', 'session_id', 'song_name', 'artist_name', 'group_name', 'song_format'] : current === 1 ? ['contact_phone'] : [];
-      if (fields.length) await form.validateFields(fields);
+      const fields = current === 0 ? ['organizer_id', 'session_id', 'song_name', 'artist_name', 'group_name', 'song_format'] : current === 1 ? ['contact_phone', 'members'] : [];
+      if (fields.length) await form.validateFields(fields, { recursive: true });
       setCurrent(current + 1);
     } catch {}
   };
@@ -143,7 +143,9 @@ export default function RoadshowCreatePage() {
           <Title level={3} style={{ marginBottom: 24 }}>路演报名</Title>
           <Steps current={current} items={steps.map((s) => ({ title: s.title }))} style={{ marginBottom: 32 }} />
           <Form form={form} layout="vertical" onFinish={onFinish}>
-            {steps[current].content}
+            {steps.map((step, index) => (
+              <div key={step.title} hidden={current !== index}>{step.content}</div>
+            ))}
             <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
               {current > 0 ? <Button onClick={prev}>上一步</Button> : <span />}
               {current < steps.length - 1 ? (

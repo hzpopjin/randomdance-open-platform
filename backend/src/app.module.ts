@@ -1,3 +1,5 @@
+import { NotificationDraft } from './modules/notification-drafts/notification-draft.entity';
+import { NotificationDraftModule } from './modules/notification-drafts/notification-draft.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -43,14 +45,16 @@ import { ObjectStorageConfig } from './modules/upload/entities/object-storage-co
         entities: [
           User, Session, RoadshowRegistration, RegistrationMember,
           Submission, SubmissionSong, Song, ClientEvent, ClientConfig, SystemLog,
-          RoadshowPosition, RoadshowPositionEvent, ObjectStorageConfig,
+          RoadshowPosition, RoadshowPositionEvent, ObjectStorageConfig, NotificationDraft,
         ],
-        synchronize: true,
+        // Schema changes are explicit migrations. Never auto-alter production tables.
+        synchronize: config.get<string>('DB_SYNCHRONIZE') === 'true' &&
+          config.get<string>('NODE_ENV') !== 'production',
       }),
     }),
     AuthModule, UserModule, SessionModule, RoadshowModule, SubmissionModule,
     SongModule, UploadModule, AdminModule, ClientEventsModule, ClientConfigModule,
-    SystemLogsModule,
+    SystemLogsModule, NotificationDraftModule,
   ],
 })
 export class AppModule {}

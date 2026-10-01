@@ -36,6 +36,7 @@ import { canAccessAdmin, isSuperAdmin } from '../utils/role';
 const RoadshowMediaUploadPage = lazy(() => import('../pages/roadshow/media/index'));
 const RoadshowArrangementPage = lazy(() => import('../pages/roadshow/arrangement/index'));
 const ObjectStoragePage = lazy(() => import('../pages/object-storage/index'));
+const NotificationDraftsPage = lazy(() => import('../pages/notification-drafts/index'));
 const OrganizerPage = lazy(() => import('../pages/organizer/index'));
 
 function RouteFallback() {
@@ -105,6 +106,7 @@ export const router = createBrowserRouter([
           { index: true, element: <AdminIndexRedirect /> },
           { path: 'dashboard', element: <RequireRole roles={[1]}><DashboardPage /></RequireRole> },
           { path: 'sessions', element: <SessionListPage /> },
+          { path: 'notification-drafts', element: <RequireRole roles={[1, 2]}><Suspense fallback={<RouteFallback />}><NotificationDraftsPage /></Suspense></RequireRole> },
           { path: 'roadshow', element: <RoadshowListPage /> },
           { path: 'roadshow/arrangement', element: <Suspense fallback={<RouteFallback />}><RoadshowArrangementPage /></Suspense> },
           { path: 'object-storage', element: <RequireRole roles={[1]}><Suspense fallback={<RouteFallback />}><ObjectStoragePage /></Suspense></RequireRole> },

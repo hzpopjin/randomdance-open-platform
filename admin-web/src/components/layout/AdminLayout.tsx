@@ -31,6 +31,7 @@ export default function AdminLayout() {
       return [
         { key: '/admin/dashboard', icon: <DashboardOutlined />, label: '数据大屏' },
         { key: '/admin/sessions', icon: <CalendarOutlined />, label: '场次管理' },
+        { key: '/admin/notification-drafts', icon: <FileTextOutlined />, label: '通知草稿与预览' },
         {
           key: 'sub-roadshow', icon: <UserOutlined />, label: '路演管理',
           children: [
@@ -65,6 +66,7 @@ export default function AdminLayout() {
     if (isOrganizer(role)) {
       return [
         { key: '/admin/sessions', icon: <CalendarOutlined />, label: '场次管理' },
+        { key: '/admin/notification-drafts', icon: <FileTextOutlined />, label: '通知草稿与预览' },
         {
           key: 'sub-roadshow', icon: <UserOutlined />, label: '路演管理',
           children: [

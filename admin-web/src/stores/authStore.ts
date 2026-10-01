@@ -17,6 +17,20 @@ function getDeviceId(): string {
   return deviceId;
 }
 
+const GUEST_CREDENTIAL_KEY = 'guest_credential_v2';
+let authGeneration = 0;
+let pendingGuest: Promise<boolean> | undefined;
+
+function getGuestCredential(): { guest_id: number; guest_secret: string } | undefined {
+  try {
+    const value = localStorage.getItem(GUEST_CREDENTIAL_KEY);
+    if (!value) return undefined;
+    const parsed = JSON.parse(value);
+    if (Number.isSafeInteger(parsed.guest_id) && typeof parsed.guest_secret === 'string') return parsed;
+  } catch { /* Invalid local data is not an identity proof. */ }
+  return undefined;
+}
+
 interface AuthState {
   user: AdminUser | null;
   token: string | null;
@@ -41,6 +55,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isGuest: localStorage.getItem('is_guest') === 'true',
 
   login: async (username, password) => {
+    ++authGeneration;
+    pendingGuest = undefined;
     set({ loading: true });
     try {
       const res = await loginApi({ username, password });
@@ -56,6 +72,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   register: async (username, password, nickname) => {
+    ++authGeneration;
+    pendingGuest = undefined;
     set({ loading: true });
     try {
       const res = await registerApi({ username, password, nickname });
@@ -70,35 +88,57 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  guestLogin: async () => {
-    try {
-      const deviceId = getDeviceId();
-      const res = await guestLoginApi(deviceId);
-      const { token, user } = res.data;
-      localStorage.setItem('admin_token', token);
-      localStorage.setItem('is_guest', 'true');
-      set({ token, user, authReady: true, isGuest: true });
-      return true;
-    } catch {
-      set({ authReady: true });
-      return false;
-    }
+  guestLogin: () => {
+    // StrictMode and concurrent route effects must share one first-visit identity.
+    if (pendingGuest) return pendingGuest;
+    const generation = authGeneration;
+    const request = (async () => {
+      try {
+        const deviceId = getDeviceId();
+        const res = await guestLoginApi(deviceId, getGuestCredential());
+        if (generation !== authGeneration) return false;
+        const { token, user, guest_id, guest_secret } = res.data;
+        if (!guest_id || !guest_secret) throw new Error('服务端未返回游客凭证');
+        localStorage.setItem(GUEST_CREDENTIAL_KEY, JSON.stringify({ guest_id, guest_secret }));
+        localStorage.setItem('admin_token', token);
+        localStorage.setItem('is_guest', 'true');
+        set({ token, user, authReady: true, isGuest: true });
+        return true;
+      } catch {
+        if (generation === authGeneration) set({ authReady: true });
+        return false;
+      }
+    })();
+    pendingGuest = request;
+    void request.finally(() => {
+      if (pendingGuest === request) pendingGuest = undefined;
+    });
+    return request;
   },
 
   logout: () => {
+    ++authGeneration;
+    pendingGuest = undefined;
     logoutApi().catch(() => {});
     localStorage.removeItem('admin_token');
     localStorage.removeItem('is_guest');
+    // Explicit logout forgets the bearer proof on this device.
+    localStorage.removeItem(GUEST_CREDENTIAL_KEY);
     set({ user: null, token: null, isGuest: false });
     window.location.href = '/login';
   },
 
   fetchProfile: async () => {
+    const generation = authGeneration;
+    const token = get().token;
     try {
       const res = await getProfile();
+      if (generation !== authGeneration || token !== get().token) return;
       set({ user: res.data, authReady: true });
     } catch {
-      set({ authReady: true });
+      if (generation !== authGeneration || token !== get().token) return;
+      localStorage.removeItem('admin_token');
+      set({ token: null, user: null, authReady: true });
     }
   },
 
